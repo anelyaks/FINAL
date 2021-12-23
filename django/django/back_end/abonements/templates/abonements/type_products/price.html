@@ -1,0 +1,165 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap"
+          rel="stylesheet">
+    <title>Training Studio</title>
+
+    <link rel="stylesheet" href="{% static 'main/css/price.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'main/css/bootstrap.min.css' %}">
+
+    <link rel="stylesheet" type="text/css " href="{% static 'main/css/font-awesome.css' %}">
+
+    <link rel="stylesheet" href=" {% static 'main/css/templatemo-training-studio.css '%}">
+
+</head>
+
+<!-- ***** Preloader Start ***** -->
+<div id="js-preloader" class="js-preloader">
+    <div class="preloader-inner">
+        <span class="dot"></span>
+        <div class="dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</div>
+<!-- ***** Preloader End ***** -->
+
+
+<!-- ***** Header Area Start ***** -->
+<header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a href="/" class="logo" style="color: black;">Training<em> Studio</em></a>
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                        <li class="scroll-to-section"><a href="/" style="color: black;">Home</a></li>
+                        <li class="scroll-to-section"><a href="/about" style="color: black;">About</a></li>
+                        <li class="scroll-to-section"><a href="/classes" style="color: black;">Classes</a></li>
+                        <li class="scroll-to-section"><a href="/schedules" style="color: black;">Schedules</a></li>
+                        <li class="scroll-to-section"><a href="/contactus" style="color: black;">Contact</a></li>
+                        <li class="scroll-to-section"><a href="/price" class="active">Prices</a></li>
+                        {% if user.is_authenticated %}
+                        <li><a href="{% url 'logout'%}?next={{request.path}}">{{ user.get_username }}/Logout</a></li>
+                        {% else %}
+                        <li><a class="main-button" href="{% url 'signup'%}?next={{request.path}}">Login</a></li>
+                        {% endif %}
+                    </ul>
+                    <a class='menu-trigger'>
+                        <span>Menu</span>
+                    </a>
+                    <!-- ***** Menu End ***** -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+<body>
+        <div class="row">
+            <div class="columns">
+                <div id="sidebar" class="ml-3">
+                    {% if user.is_authenticated and user.get_username == 'admin' %}
+                        <h3>Category/<a href="{% url 'abonements:create' %}">Create Product</a></h3>
+                    {% else %}<h3>Category</h3>{% endif %}
+
+                    <div class="btn-group mt-3" role="group">
+                        <button class="btn btn-outline-danger" {% if not category %} type="button"   {% endif %}> <a href="{% url 'abonements:product_list' %}">All</a></button>
+                        {% for c in categories %}
+                            <button class="btn btn-outline-danger" {% if category.slug == c.slug %} type="button" {% endif %}><a
+                                    href="{{ c.get_absolute_url }}" style="text-decoration:none">{{ c.name }}</a></button>
+                        {% endfor %}
+                    </div>
+                </div>
+                </div>
+        </div>
+                <div id="main" class="product-list ml-4">
+                    <h1>{% if category %}{{ category.name }}{% else %} Product {% endif %}</h1>
+                     <div class="rows">
+                    {% for product in products %}
+                            <div class="columns">
+                             <ul class="price ">
+                                 <li class="header">{{ product.category.name }}</a></li>
+                                <li class="grey">{{ product.level }}</a></li>
+                                <li class="white">{{ product.type }}</a></li>
+                                <li class="white"> $ {{ product.price }} /month</li>
+
+                            {% if user.is_authenticated and user.get_username == 'admin' %}
+                                <a href="{% url 'abonements:update' product.pk %}"><button type="button" class="btn btn-success">Update</button></a>
+                                <a href="{% url 'abonements:delete' product.pk %}"><button type="button" class="btn btn-success">Delete</button></a>
+                            {% else %}
+
+                               <li style="background-color:#ee5538;"><a href="#"
+                                                         onclick="document.getElementById('id03').style.display='block'"
+                                                         style="width:auto;color:white ">ACQUIRE</a></li>
+                                 </ul>
+                                <div id="id03" class="modal">
+                                    <div class="contacts d-flex justify-content-center align-items-center">
+                                        <div class="col-md-4 p-2 mb-2 bg-white text-dark">
+                                            <span onclick="document.getElementById('id03').style.display='none'" class="close"
+                                                  title="Close Modal">&times;</span>
+                                            <p class="font-weight-bold text-center mb-2 mt-3 text-dark" style="font-size: 22px;">Leave your
+                                                contacts below and we will call you</p>
+                                            <form method="post">
+                                                {% csrf_token %}
+                                                <li style="font-size: 24px;" class="font-weight-light">{{form.name}}</li>
+                                                <li style="font-size: 24px;" class="font-weight-light">{{form.number}}</li>
+
+                                                <li>
+                                                    <button type="submit" id="form-submit" class="text-white font-weight-light "
+                                                            style="font-size: 29px; background-color:#ee5538">Call me!
+                                                    </button>
+                                                </li>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                    </div>
+
+
+                    {% endfor %}
+                      </div>
+                 </div>
+
+
+
+</body>
+<script src="{% static 'main/js/jquery-2.1.0.min.js' %}"></script>
+
+<!-- Bootstrap -->
+<script src="{% static 'main/js/popper.js' %}"></script>
+<script src="{% static 'main/js/bootstrap.min.js' %}"></script>
+
+<!-- Plugins -->
+<script src="{% static 'main/js/scrollreveal.min.js' %}"></script>
+<script src="{% static 'main/js/waypoints.min.js' %}"></script>
+<script src="{% static 'main/js/jquery.counterup.min.js' %}"></script>
+<script src="{% static 'main/js/imgfix.min.js' %}"></script>
+<script src="{% static 'main/js/mixitup.js' %}"></script>
+<script src="{% static 'main/js/accordions.js' %}"></script>
+
+<!-- Global Init -->
+<script src="{% static 'main/js/custom.js' %}"></script>
+<script>
+
+
+        var modal = document.getElementById('id03');
+        window.onclick = function(event) {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
+        }
+
+</script>
+</html>

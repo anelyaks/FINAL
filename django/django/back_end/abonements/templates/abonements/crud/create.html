@@ -1,0 +1,15 @@
+{% extends "abonements/base.html" %}
+{% block content %}
+<div class="row-md-12">
+    <div class="columns">
+    <div class="col-lg-12">
+    <form class ="mt-2" style="width:100px; height:100%" method="post">
+        {% csrf_token %}
+        <br>
+        {{ form.as_p }}
+        <button type="submit" class = "btn btn-success">Create</button>
+    </form>
+    </div>
+    </div>
+ </div>
+{% endblock %}
